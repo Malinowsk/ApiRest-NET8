@@ -51,5 +51,58 @@ namespace ApiRestASPNETCore.Controllers
             return CreatedAtAction("GetVestimenta", new { id = vestimenta.IdVestimenta }, vestimenta);
         }
 
+
+        // PUT: api/Vestimenta/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutVestimenta(int id, Vestimenta vestimenta)
+        {
+            if (id != vestimenta.IdVestimenta)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(vestimenta).State = EntityState.Modified; // modifico el estado de la vestimenta
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!VestimentaExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        // DELETE: api/Vestimenta/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteVestimenta(int id)
+        {
+            var vestimenta = await _context.Vestimentas.FindAsync(id);
+            if (vestimenta == null)
+            {
+                return NotFound();
+            }
+
+            _context.Vestimentas.Remove(vestimenta);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private bool VestimentaExists(int id)
+        {
+            return _context.Vestimentas.Any(e => e.IdVestimenta == id);
+        }
     }
+
 }
